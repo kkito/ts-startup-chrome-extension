@@ -1,17 +1,22 @@
-import { Greeter } from './greeter';
-export * from './greeter';
+declare const chrome: {
+  tabs: {
+    executeScript: (params: any) => void;
+  };
+};
 
-// tslint:disable-next-line:only-arrow-functions
-(function(currentWindow: Window) {
-  // execute when load index.js
+function changeBackgroundColor(color: string) {
+  const script = 'document.body.style.backgroundColor="' + color + '";';
+  chrome.tabs.executeScript({
+    code: script,
+  });
+}
 
-  // tslint:disable-next-line:no-console
-  console.log('hello world');
+document.addEventListener('DOMContentLoaded', () => {
+  const dropdown = document.getElementById('dropdown');
 
-  // assign Greeter to global
-  const myWindow = currentWindow as any;
-  myWindow.Greeter = Greeter;
-  // we can use Greeter , execute following in console
-  // var greet = new Greeter('myName');
-  // greet.greet();
-})(window);
+  if (dropdown) {
+    dropdown.addEventListener('change', () => {
+      changeBackgroundColor((dropdown as any).value);
+    });
+  }
+});
